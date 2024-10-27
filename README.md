@@ -1,6 +1,5 @@
 # todo-list
 
-//components
 1.Header
   1.1. Logo
   1.2. name of the app
