@@ -15,7 +15,7 @@
        - Description: 12 reps, 4 sets
        - Due Date: 30/12/2024
        - Priority: Low, Medium, or High
-       - 2.2.3.1. Should have a delete and update button
+       - Should have a delete and update button
      - 2.2.5. Add Task button
        - 2.2.5.1. Form with:
          - Title
@@ -23,7 +23,7 @@
          - Due Date
          - Priority
          - Cancel and Submit buttons
-     - 2.2.6. Checkbox to indicate task as done, applying a strikethrough to completed tasks
+         - Checkbox to indicate task as done, applying a strikethrough to completed tasks
 
 3. **Main Container**
    - 3.1. If one of the components in the sidebar is clicked, it displays its content inside the main container.
