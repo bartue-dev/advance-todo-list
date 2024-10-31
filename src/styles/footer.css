@@ -1,0 +1,12 @@
+footer {
+  background-color: #404040;
+  color: white;
+  height: 40px;
+  grid-column: 1/7;
+
+  box-shadow: 0 -1px 1px #404040;
+}
+
+footer > h1 {
+  font-size: 1rem;
+}

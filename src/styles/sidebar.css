@@ -1,0 +1,166 @@
+.sidebar {
+  background-color: #f8fafc;
+  grid-row: 2/7;
+  width: 280px;
+
+  box-shadow: 5px 0 4px -4px lightgray;
+  display: grid;
+  grid-template-rows: 1fr 1.5fr;
+  padding: 10px;
+
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+}
+
+.status-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  height: 180.81px;
+}
+
+.status-container button > img  {
+  width: 30px;
+  height: 30px;
+
+}
+
+.status-container > button {
+  border: none;
+  outline: none;
+  background-color:  #f8fafc;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: left;
+  border-radius: 5px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #262626;
+
+}
+
+.status-container > button:hover {
+  background-color: #e2e8f0;
+}
+
+/* projects */
+.projects-container {
+  margin-top: 10px;
+  margin-bottom: 50px;
+}
+
+.projects-container > h1 {
+  font-size: 1.2rem;
+  margin-left: 8px;
+  color: #262626;
+}
+
+.projects-container > button {
+  width: 100%;
+  padding: 10px;
+  border: transparent;
+  background-color: transparent;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #262626;;
+  font-weight: 700;
+}
+
+.projects-container button > .add-icon {
+  width: 30px;
+  font-size: 1.2rem;
+  border-radius: 40%;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+}
+
+.projects-container button:hover > .add-icon {
+  background-color: black;
+  color: white;
+}
+
+.project-form {
+  margin-top: 7px;
+  display: none; /* if add project button clicked display: grid */
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 5px;
+}
+
+.project-form > button {
+  width: 100%;
+  border: 1px solid lightgray;
+  outline: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+
+#project-input {
+  padding: 10px;
+  border: transparent;
+  margin-bottom: 5px;
+  grid-column: 1/3;
+}
+
+#project-input:focus {
+  border: 1px solid lightgray;
+  outline: none;
+  border-radius: 5px;
+}
+
+.my-project-element {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.my-project-element > button {
+  display: none;
+  border: transparent;
+  margin-left: auto;
+  outline: none;
+  padding: 0 7px;
+  background-color: transparent;
+  color: #a8a29e;
+  cursor: pointer;
+}
+
+.my-project-element:hover {
+  background-color: #e2e8f0;
+}
+
+.my-project-element:hover > button {
+  display: block;
+}
+
+.my-project-element .project-icon {
+  width: 20px;
+}
+
+.my-project-element .close-icon {
+  width: 20px;
+  filter: grayscale(1) brightness(0) invert(0.5);
+}
+
