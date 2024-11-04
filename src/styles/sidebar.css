@@ -54,7 +54,7 @@
 /* projects */
 .projects-container {
   margin-top: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .projects-container > h1 {
@@ -75,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #262626;;
+  color: #262626;
   font-weight: 700;
 }
 
@@ -94,6 +94,11 @@
 .projects-container button:hover > .add-icon {
   background-color: black;
   color: white;
+}
+
+.project-list-container{
+  width: 100%;
+  height: auto;
 }
 
 .project-form {
@@ -134,10 +139,11 @@
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+  background-color: transparent;
+  width: 100%;
 }
 
 .my-project-element > button {
-  display: none;
   border: transparent;
   margin-left: auto;
   outline: none;
@@ -145,6 +151,12 @@
   background-color: transparent;
   color: #a8a29e;
   cursor: pointer;
+  width: 30px;
+  height: 25px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .my-project-element:hover {
@@ -152,15 +164,24 @@
 }
 
 .my-project-element:hover > button {
-  display: block;
+  display: flex;
 }
 
 .my-project-element .project-icon {
   width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .my-project-element .close-icon {
   width: 20px;
-  filter: grayscale(1) brightness(0) invert(0.5);
+  height: 20px;
+  object-fit: cover;
+  filter: grayscale(1) brightness(1) invert(0.6);
+  flex-shrink: 0;
+}
+
+.my-project-element.active {
+  background-color: #e2e8f0;;
 }
 
