@@ -37,10 +37,7 @@ export function createMain() {
   //create task button (+)
   createTaskBtn.addEventListener("click", (event) =>{
     event.preventDefault();
-    dialogForm.showModal();
-
-
-    
+    dialogForm.showModal();   
   });
 
   //dialog box for form
@@ -50,28 +47,28 @@ export function createMain() {
   mainCon.appendChild(dialogForm)
 
   //submit the task form data
-    taskForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-  
-      const formData = new FormData(taskForm);
-      const formEntries = Object.fromEntries(formData.entries());
+  taskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(taskForm);
+    const formEntries = Object.fromEntries(formData.entries());
 
 
-      const taskData = {
-        ...formEntries,
-        projectName: sidebarProject.getCurrentProject(),
-        taskId: taskId++,
-      }
-      myTask.push(taskData);
-      console.log(myTask);
-      
-     
-      renderTaskList();
-      taskForm.reset();
-      
-      dialogForm.close();
-      
-    });
+    const taskData = {
+      ...formEntries,
+      projectName: sidebarProject.getCurrentProject(),
+      taskId: taskId++,
+    }
+    myTask.push(taskData);
+    console.log(myTask);
+    
+    
+    renderTaskList();
+    taskForm.reset();
+    
+    dialogForm.close();
+    
+  });
   
 
   //cancel task button from form
@@ -193,11 +190,13 @@ export function createMain() {
       taskBtnElements.deleteTaskBtn.addEventListener("click", (event) => {
         event.preventDefault();
 
+        //use findIndex method to original array and filtered array using the id to get the its INDEX 
         const toDeleteTaskIndex = myTask.findIndex(deleteTask => deleteTask.taskId === task.taskId);
         console.log("Delete task Index:", toDeleteTaskIndex);
         
         myTask.splice(toDeleteTaskIndex, 1)
         renderTaskList(); 
+        console.log(myTask);
       });
       
     });
@@ -211,6 +210,7 @@ export function createMain() {
     return myElement
   }
 
+  //reusable function to close dialog when clicked outside
   function closeDialogScreen(dialog){
     dialog.addEventListener("click", e => {
       const dialogDimensions = dialog.getBoundingClientRect()
