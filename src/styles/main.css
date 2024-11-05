@@ -102,7 +102,7 @@ main .task-button-container > button:nth-child(2) {
 }
 
 main .dialog-form {
-  margin: auto;
+  margin: 8% auto;
   border: transparent;
   outline: none;
   padding: 25px 20px 20px 20px;
@@ -111,7 +111,7 @@ main .dialog-form {
 }
 
 main .dialog-form::backdrop {
-  background-color: transparent; 
+  opacity: 0.5;
 }
 
 main .main-project-container .task-container {
@@ -147,4 +147,50 @@ main .task-item .taskEl-button-container > button {
 
 main .task-details-dialog {
   margin: auto;
+  padding: 30px 40px;
+  height: 480px;
+
+  border: transparent;
+  box-shadow: 0 0 1px 1px rgb(228, 228, 228);
+  border-radius: 5px;
+}
+
+main .task-details-dialog::backdrop {
+  opacity: 0.5;
+}
+
+main .task-details-dialog > h1 {
+  font-size: 2.3rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px ;
+
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+main .task-details-dialog .details-container > h1 {
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+main .task-details-dialog .details-container > h2 {
+  font-weight: 400;
+  font-size: 1.3rem;
+  word-break: break-word
+
+}
+main .task-details-dialog .details-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 10px;
+
+  width: 300px;
+  height: auto;
 }
