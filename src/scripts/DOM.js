@@ -200,7 +200,10 @@ export function createDOM() {
 
   formInputs.taskDate.type = "date";
   formInputs.taskDate.name = "taskDate";
-  formInputs.taskDate.required = true;
+
+  if(isNaN(formInputs.taskDate.value)){
+    formInputs.taskDate.textContent = "Please Select Date"
+  }
 
   formInputs.taskDescription.placeholder = "Description";
   formInputs.taskDescription.required = true;
