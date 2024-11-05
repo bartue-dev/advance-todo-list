@@ -2,7 +2,7 @@ import deleteImage from "../../assets/images/delete.png";
 import editImage from "../../assets/images/edit.png";
 import arrowImage from "../../assets/images/next.png"
 import { DOM  } from "./DOM";
-import { format, parseISO } from "date-fns"
+import { format, parseISO, isValid } from "date-fns"
 import { sidebarProject } from "./project";
 
 export function createMain() {
@@ -29,6 +29,7 @@ export function createMain() {
     projectTitle.textContent = project;
     mainCon.appendChild(mainProjectCon);
 
+    //render the task list every time a project is clicked
     renderTaskList()
   }
 
@@ -54,7 +55,7 @@ export function createMain() {
   
       const formData = new FormData(taskForm);
       const formEntries = Object.fromEntries(formData.entries());
-      console.log(formEntries);
+
 
       const taskData = {
         ...formEntries,
@@ -67,7 +68,6 @@ export function createMain() {
       taskForm.reset();
       
       dialogForm.close();
-      console.log(myTask);
       
     });
   
@@ -82,15 +82,24 @@ export function createMain() {
  closeDialogScreen(dialogForm);
 
   function renderTaskList(){
+
+    //filtered the myTask array to return a specific tasks base on project/project name
     const filteredTask = myTask.filter(task => task.projectName === sidebarProject.getCurrentProject());
 
     taskCon.innerHTML = "";  
 
+    //loop through the filtered task to display it to the DOM with the specified project
     filteredTask.forEach((task, index) => {
+
+      //format the date using the date fns library
       const inputDate = task.taskDate;  
-      const parsedDate = parseISO(inputDate);
-      const formattedDate = format(parsedDate, "MMM dd, yyyy");
-      console.log(formattedDate);
+      const parsedDate  = parseISO(inputDate);
+      let formattedDate;
+
+      if(isValid(parsedDate)){  
+        formattedDate = format(parsedDate, "MMM dd, yyyy");
+      }
+
 
       const dialogElements = {
         taskDetailsDialog: createEl("dialog"),
@@ -98,23 +107,33 @@ export function createMain() {
         detailsCon: createEl("div"),
       }
 
+      dialogElements.detailsCon.innerHTML = "";
+
       dialogElements.taskDetailsDialog.classList.add("task-details-dialog"); 
+      dialogElements.detailsCon.classList.add("details-container");
       dialogElements.taskDialogTitle.textContent = "Task Details";
 
-      dialogElements.detailsCon.innerHTML = "";
   
       closeDialogScreen(dialogElements.taskDetailsDialog);
 
       const detailsElements = {
+        myTaskName: createEl("h1"),
         taskNameDialog: createEl("h2"),
-        taskDescription: createEl("p"),
-        taskDate: createEl("h3"),
-        taskPriority: createEl("h3"),
+        myDescription: createEl("h1"),
+        taskDescription: createEl("h2"),
+        myDate: createEl("h1"),
+        taskDate: createEl("h2"),
+        myPriority: createEl("h1"),
+        taskPriority: createEl("h2"),
       }
 
-      detailsElements.taskNameDialog.textContent = `Task name: ${task.taskName}`;
-      detailsElements.taskDescription.textContent = `Description: ${task.taskDescription}`;
-      detailsElements.taskDate.textContent = `Date: ${formattedDate}`;
+      detailsElements.myTaskName.textContent = "Task"
+      detailsElements.taskNameDialog.textContent = task.taskName;
+      detailsElements.myDescription.textContent = "Description"
+      detailsElements.taskDescription.textContent = task.taskDescription;
+      detailsElements.myDate.textContent = "Date"
+      detailsElements.taskDate.textContent =  formattedDate ? formattedDate : "No Date";
+      detailsElements.myPriority.textContent = "Priority"
       detailsElements.taskPriority.textContent = `Priority: ${task.taskPriority}`;
 
       const taskElements = {
@@ -161,13 +180,28 @@ export function createMain() {
         dialogElements.detailsCon.appendChild(elements);
       });
 
-      taskCon.appendChild(dialogElements.taskDetailsDialog)
+      mainCon.appendChild(dialogElements.taskDetailsDialog)
       taskCon.appendChild(taskElements.taskEl)
      
       taskBtnElements.openDialogBtn.addEventListener("click", (event) => {
         event.preventDefault();
         dialogElements.taskDetailsDialog.showModal();
       });
+
+      taskBtnElements.deleteTaskBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        filteredTask.splice(index, 1)
+        myTask.splice(index, 1);
+        renderTaskList();
+
+        console.log("This is delete task button!");
+        console.log(filteredTask)
+        console.log(myTask);
+        
+        
+      });
+      
 
       function createEl(element) {
         const myElement = document.createElement(element);
