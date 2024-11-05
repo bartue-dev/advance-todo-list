@@ -16,6 +16,7 @@ export function createMain() {
   const projectTitle = DOM.projectTitle;
   const mainProjectCon = DOM.mainProjectCon;
   const taskCon = DOM.taskCon;
+  let taskId = 0;
 
 
   //function to display the project to main/export to project js
@@ -39,7 +40,6 @@ export function createMain() {
     dialogForm.showModal();
 
 
-    console.log("CREATE TASK BUTTON!");
     
   });
 
@@ -60,9 +60,11 @@ export function createMain() {
       const taskData = {
         ...formEntries,
         projectName: sidebarProject.getCurrentProject(),
+        taskId: taskId++,
       }
       myTask.push(taskData);
-
+      console.log(myTask);
+      
      
       renderTaskList();
       taskForm.reset();
@@ -78,9 +80,45 @@ export function createMain() {
     dialogForm.close();
   });
 
-  //close the dialog when clicked outside
- closeDialogScreen(dialogForm);
+  //create a dialog for task details
+  const dialogElements = {
+    taskDetailsDialog: createEl("dialog"),
+    taskDialogTitle: createEl("h1"),
+    detailsCon: createEl("div"),
+  }
 
+  dialogElements.taskDetailsDialog.classList.add("task-details-dialog"); 
+  dialogElements.detailsCon.classList.add("details-container");
+  dialogElements.taskDialogTitle.textContent = "Task Details";
+
+  closeDialogScreen(dialogElements.taskDetailsDialog);
+
+  const detailsElements = {
+    myTaskName: createEl("h1"),
+    taskNameDialog: createEl("h2"),
+    myDescription: createEl("h1"),
+    taskDescription: createEl("h2"),
+    myDate: createEl("h1"),
+    taskDate: createEl("h2"),
+    myPriority: createEl("h1"),
+    taskPriority: createEl("h2"),
+  }
+
+  detailsElements.myTaskName.textContent = "Task"
+  detailsElements.myDescription.textContent = "Description"
+  detailsElements.myDate.textContent = "Date"
+  detailsElements.myPriority.textContent = "Priority"
+
+  Object.values(detailsElements).forEach(elements => {
+    dialogElements.detailsCon.appendChild(elements);
+  });
+
+  dialogElements.taskDetailsDialog.appendChild(dialogElements.taskDialogTitle);
+  dialogElements.taskDetailsDialog.appendChild(dialogElements.detailsCon); 
+
+  mainCon.appendChild(dialogElements.taskDetailsDialog);
+
+  //render the task list to the DOM!
   function renderTaskList(){
 
     //filtered the myTask array to return a specific tasks base on project/project name
@@ -99,42 +137,6 @@ export function createMain() {
       if(isValid(parsedDate)){  
         formattedDate = format(parsedDate, "MMM dd, yyyy");
       }
-
-
-      const dialogElements = {
-        taskDetailsDialog: createEl("dialog"),
-        taskDialogTitle: createEl("h1"),
-        detailsCon: createEl("div"),
-      }
-
-      dialogElements.detailsCon.innerHTML = "";
-
-      dialogElements.taskDetailsDialog.classList.add("task-details-dialog"); 
-      dialogElements.detailsCon.classList.add("details-container");
-      dialogElements.taskDialogTitle.textContent = "Task Details";
-
-  
-      closeDialogScreen(dialogElements.taskDetailsDialog);
-
-      const detailsElements = {
-        myTaskName: createEl("h1"),
-        taskNameDialog: createEl("h2"),
-        myDescription: createEl("h1"),
-        taskDescription: createEl("h2"),
-        myDate: createEl("h1"),
-        taskDate: createEl("h2"),
-        myPriority: createEl("h1"),
-        taskPriority: createEl("h2"),
-      }
-
-      detailsElements.myTaskName.textContent = "Task"
-      detailsElements.taskNameDialog.textContent = task.taskName;
-      detailsElements.myDescription.textContent = "Description"
-      detailsElements.taskDescription.textContent = task.taskDescription;
-      detailsElements.myDate.textContent = "Date"
-      detailsElements.taskDate.textContent =  formattedDate ? formattedDate : "No Date";
-      detailsElements.myPriority.textContent = "Priority"
-      detailsElements.taskPriority.textContent = `Priority: ${task.taskPriority}`;
 
       const taskElements = {
         taskEl: createEl("div"),
@@ -170,45 +172,43 @@ export function createMain() {
       taskBtnElements.editTaskBtn.appendChild(taskBtnIcons.editIcon);
       taskBtnElements.openDialogBtn.appendChild(taskBtnIcons.arrowIcon);
 
-      dialogElements.taskDetailsDialog.appendChild(dialogElements.taskDialogTitle);
-      dialogElements.taskDetailsDialog.appendChild(dialogElements.detailsCon); 
-
       taskElements.taskEl.appendChild(taskElements.taskTitle);
       taskElements.taskEl.appendChild(taskElements.taskBtnCon);
 
-      Object.values(detailsElements).forEach(elements => {
-        dialogElements.detailsCon.appendChild(elements);
-      });
-
-      mainCon.appendChild(dialogElements.taskDetailsDialog)
       taskCon.appendChild(taskElements.taskEl)
      
+      //open dialog button event listener
       taskBtnElements.openDialogBtn.addEventListener("click", (event) => {
         event.preventDefault();
+
+        detailsElements.taskNameDialog.textContent = task.taskName;
+        detailsElements.taskDescription.textContent = task.taskDescription;
+        detailsElements.taskDate.textContent =  formattedDate ? formattedDate : "No Date";
+        detailsElements.taskPriority.textContent = `Priority: ${task.taskPriority}`;
+
         dialogElements.taskDetailsDialog.showModal();
       });
 
+      //delete task button/icon. Delete base on index
       taskBtnElements.deleteTaskBtn.addEventListener("click", (event) => {
         event.preventDefault();
 
-        filteredTask.splice(index, 1)
-        myTask.splice(index, 1);
-        renderTaskList();
-
-        console.log("This is delete task button!");
-        console.log(filteredTask)
-        console.log(myTask);
+        const toDeleteTaskIndex = myTask.findIndex(deleteTask => deleteTask.taskId === task.taskId);
+        console.log("Delete task Index:", toDeleteTaskIndex);
         
-        
+        myTask.splice(toDeleteTaskIndex, 1)
+        renderTaskList(); 
       });
       
-
-      function createEl(element) {
-        const myElement = document.createElement(element);
-
-        return myElement
-      }
     });
+     
+  }
+
+  //reuseable function for creating an element
+  function createEl(element) {
+    const myElement = document.createElement(element);
+
+    return myElement
   }
 
   function closeDialogScreen(dialog){
