@@ -13,11 +13,14 @@ export function createMain() {
   const taskForm = DOM.taskForm;
   const createTaskBtn = DOM.createTaskBtn;
   const taskFormCancelBtn = DOM.formInputs.cancelTaskBtn;
+  const taskFormAddBtn = DOM.formInputs.addTaskBtn;
   const projectTitle = DOM.projectTitle;
   const mainProjectCon = DOM.mainProjectCon;
   const taskCon = DOM.taskCon;
+  let currentTaskId;
   let isEditBtn = true;
   let taskId = 0;
+  
 
 
   //function to display the project to main/export to project js
@@ -39,10 +42,12 @@ export function createMain() {
   createTaskBtn.addEventListener("click", (event) =>{
     event.preventDefault();
     dialogForm.showModal();   
-
+    console.log("current task Id",currentTaskId);
+    
     if(isEditBtn) {
       DOM.formInputs.addTaskBtn.textContent = "Add task"
     }
+    taskForm.reset();
   });
 
   //dialog box for form
@@ -57,21 +62,29 @@ export function createMain() {
 
     const formData = new FormData(taskForm);
     const formEntries = Object.fromEntries(formData.entries());
+    
+    if(taskFormAddBtn.textContent === "Add task"){
+      const taskData = {
+        ...formEntries,
+        projectName: sidebarProject.getCurrentProject(),
+        taskId: taskId++,
+      }
+      myTask.push(taskData);
+     
+    }else {
+      const taskIndex = myTask.findIndex(t => t.taskId === currentTaskId)
 
-
-    const taskData = {
-      ...formEntries,
+      myTask[taskIndex] = {
+        ...formEntries,
       projectName: sidebarProject.getCurrentProject(),
-      taskId: taskId++,
-    }
-    myTask.push(taskData);
-    console.log(myTask);
-    
-    
-    renderTaskList();
-    taskForm.reset();
-    
-    dialogForm.close();
+        taskId: currentTaskId,
+      }
+  }
+  console.log("my Task array:",myTask);
+  renderTaskList();
+  taskForm.reset();
+  
+  dialogForm.close();
     
   });
   
@@ -142,14 +155,15 @@ export function createMain() {
 
       const taskElements = {
         taskEl: createEl("div"),
-        taskTitle: createEl("h2"),
+        taskName: createEl("h2"),
         taskBtnCon: createEl("div"),
       }
 
       taskElements.taskEl.classList.add("task-item");
       taskElements.taskBtnCon.classList.add("taskEl-button-container");
-      taskElements.taskTitle.classList.add("task-title-name");
-      taskElements.taskTitle.textContent = task.taskName;
+      taskElements.taskName.classList.add("task-title-name");
+      //display the task name
+      taskElements.taskName.textContent = task.taskName;
 
       const taskBtnIcons = {
         deleteIcon: createEl("img"),
@@ -175,7 +189,7 @@ export function createMain() {
       taskBtnElements.editTaskBtn.appendChild(taskBtnIcons.editIcon);
       taskBtnElements.openDialogBtn.appendChild(taskBtnIcons.arrowIcon);
 
-      taskElements.taskEl.appendChild(taskElements.taskTitle);
+      taskElements.taskEl.appendChild(taskElements.taskName);
       taskElements.taskEl.appendChild(taskElements.taskBtnCon);
 
       taskCon.appendChild(taskElements.taskEl)
@@ -208,6 +222,8 @@ export function createMain() {
       taskBtnElements.editTaskBtn.addEventListener("click", (event) => {
         event.preventDefault();
   
+        currentTaskId = task.taskId;
+
         DOM.formInputs.taskName.value = task.taskName;
         DOM.formInputs.taskDescription.value = task.taskDescription;
         DOM.formInputs.taskDate.value = task.taskDate;
@@ -217,12 +233,7 @@ export function createMain() {
           DOM.formInputs.addTaskBtn.textContent = "Update task"
         }      
 
-        dialogForm.showModal();
-
-       // isEditBtn = false;
-        
-        console.log("EDIT BUTTON!");
-        
+        dialogForm.showModal();       
       });
       
     });
