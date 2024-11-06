@@ -127,6 +127,10 @@ main .main-project-container .task-container .task-item {
   margin-bottom: 10px;
 }
 
+main .task-item .task-title-name {
+  font-weight: 400;
+}
+
 main .task-item > h2,
 main .task-item > h3 {
   font-size: 1.1rem;
