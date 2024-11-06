@@ -124,7 +124,7 @@ export function createMain() {
     taskCon.innerHTML = "";  
 
     //loop through the filtered task to display it to the DOM with the specified project
-    filteredTask.forEach((task, index) => {
+    filteredTask.forEach(task => {
 
       //format the date using the date fns library
       const inputDate = task.taskDate;  
@@ -198,6 +198,22 @@ export function createMain() {
         myTask.splice(toDeleteTaskIndex, 1)
         renderTaskList(); 
         console.log(myTask);
+      });
+
+      taskBtnElements.editTaskBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        DOM.formInputs.taskName.value = task.taskName;
+        DOM.formInputs.taskDescription.value = task.taskDescription;
+        DOM.formInputs.taskDate.value = task.taskDate;
+        DOM.formInputs.taskPriority.value = task.taskPriority;
+        DOM.formInputs.addTaskBtn.textContent = "Update task"
+
+
+        dialogForm.showModal();
+        
+        console.log("EDIT BUTTON!");
+        
       });
       
     });
