@@ -16,6 +16,7 @@ export function createMain() {
   const projectTitle = DOM.projectTitle;
   const mainProjectCon = DOM.mainProjectCon;
   const taskCon = DOM.taskCon;
+  let isEditBtn = true;
   let taskId = 0;
 
 
@@ -38,6 +39,10 @@ export function createMain() {
   createTaskBtn.addEventListener("click", (event) =>{
     event.preventDefault();
     dialogForm.showModal();   
+
+    if(isEditBtn) {
+      DOM.formInputs.addTaskBtn.textContent = "Add task"
+    }
   });
 
   //dialog box for form
@@ -199,18 +204,22 @@ export function createMain() {
         renderTaskList(); 
         console.log(myTask);
       });
-
+      
       taskBtnElements.editTaskBtn.addEventListener("click", (event) => {
         event.preventDefault();
-
+  
         DOM.formInputs.taskName.value = task.taskName;
         DOM.formInputs.taskDescription.value = task.taskDescription;
         DOM.formInputs.taskDate.value = task.taskDate;
         DOM.formInputs.taskPriority.value = task.taskPriority;
-        DOM.formInputs.addTaskBtn.textContent = "Update task"
 
+        if(isEditBtn){
+          DOM.formInputs.addTaskBtn.textContent = "Update task"
+        }      
 
         dialogForm.showModal();
+
+       // isEditBtn = false;
         
         console.log("EDIT BUTTON!");
         
