@@ -143,6 +143,7 @@ export function createMain() {
 
       taskElements.taskEl.classList.add("task-item");
       taskElements.taskBtnCon.classList.add("taskEl-button-container");
+      taskElements.taskTitle.classList.add("task-title-name");
       taskElements.taskTitle.textContent = task.taskName;
 
       const taskBtnIcons = {
