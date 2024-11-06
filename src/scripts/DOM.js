@@ -176,9 +176,13 @@ export function createDOM() {
   const taskBtnCon = document.createElement("div");
 
   const formInputs = {
+    taskNameLabel: createInputs("label"),
     taskName: createInputs("input"),
+    taskDescriptionLabel: createInputs("label"),
     taskDescription: createInputs("textarea"),
+    taskDateLabel: createInputs("label"),
     taskDate: createInputs("input"),
+    taskPriorityLabel: createInputs("label"),
     taskPriority: createInputs("select"),
     cancelTaskBtn: createInputs("button"),
     addTaskBtn: createInputs("button"),
@@ -192,19 +196,37 @@ export function createDOM() {
 
 
 
+  formInputs.taskNameLabel.for = "task-name";
+  formInputs.taskDescriptionLabel.for = "task-description";
+  formInputs.taskDateLabel.for = "task-date";
+  formInputs.taskPriorityLabel.for = "task-priority";
+
+  formInputs.taskPriorityLabel.classList.add("task-priority");
+
+  formInputs.taskNameLabel.textContent = "Task name";
+  formInputs.taskDescriptionLabel.textContent = "Description";
+  formInputs.taskDateLabel.textContent = "Date";
+  formInputs.taskPriorityLabel.textContent = "Priority";
+
+
   taskForm.classList.add("task-form");
   formInputs.taskName.type = "text";
   formInputs.taskName.placeholder = "* Create Task";
   formInputs.taskName.name = "taskName";
   formInputs.taskName.required = true;
-
-  formInputs.taskDate.type = "date";
-  formInputs.taskDate.name = "taskDate";
+  formInputs.taskName.id = "task-name";
 
   formInputs.taskDescription.placeholder = "Description";
   formInputs.taskDescription.required = true;
   formInputs.taskDescription.name = "taskDescription";
   formInputs.taskDescription.classList.add("description");
+  formInputs.taskDescription.id = "task-description";
+
+  formInputs.taskDate.type = "date";
+  formInputs.taskDate.name = "taskDate";
+  formInputs.taskDate.id = "task-date";
+
+
 
   formInputs.cancelTaskBtn.type = "button";
   formInputs.cancelTaskBtn.textContent = "Cancel";
@@ -213,6 +235,8 @@ export function createDOM() {
 
 
   formInputs.taskPriority.name = "taskPriority";
+  formInputs.taskPriority.id = "task-priority";
+
 
   const opt = {
     notPriority: createSelectOption("Not a priority", "Not a priority"),
