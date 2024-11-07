@@ -2,7 +2,7 @@ import deleteImage from "../../assets/images/delete.png";
 import editImage from "../../assets/images/edit.png";
 import arrowImage from "../../assets/images/next.png"
 import { DOM  } from "./DOM";
-import { format, parseISO, isValid } from "date-fns"
+import { format, parseISO, isValid, compareAsc } from "date-fns"
 import { sidebarProject } from "./project";
 
 export function createMain() {
@@ -117,12 +117,15 @@ export function createMain() {
     taskDate: createEl("h2"),
     myPriority: createEl("h1"),
     taskPriority: createEl("h2"),
+    myTaskStatus: createEl("h1"),
+    taskStatus: createEl("h2"),
   }
 
   detailsElements.myTaskName.textContent = "Task"
   detailsElements.myDescription.textContent = "Description"
   detailsElements.myDate.textContent = "Date"
   detailsElements.myPriority.textContent = "Priority"
+  detailsElements.myTaskStatus.textContent = "Status"
 
   Object.values(detailsElements).forEach(elements => {
     dialogElements.detailsCon.appendChild(elements);
@@ -132,6 +135,11 @@ export function createMain() {
   dialogElements.taskDetailsDialog.appendChild(dialogElements.detailsCon); 
 
   mainCon.appendChild(dialogElements.taskDetailsDialog);
+
+  const overDueText = document.createElement("div")
+  overDueText.textContent = "over-due"
+  overDueText.classList.add("overdue-text");
+  dialogElements.detailsCon.prepend(overDueText)
 
   //render the task list to the DOM!
   function renderTaskList(){
@@ -170,7 +178,6 @@ export function createMain() {
       taskElements.taskCheckBox.type = "checkbox";
       taskElements.taskCheckBox.name = "isTaskDone";
       taskElements.taskCheckBox.value = "done";
-      taskElements.taskCheckBox.setAttribute("id", "checkbox");
 
       
       //display the task name
@@ -204,7 +211,19 @@ export function createMain() {
       taskElements.taskEl.appendChild(taskElements.taskNameWrapper);
       taskElements.taskEl.appendChild(taskElements.taskBtnCon);
 
-      taskCon.appendChild(taskElements.taskEl)
+      taskCon.appendChild(taskElements.taskEl);
+
+      let currentDate = new Date().toJSON().slice(0, 10)
+      const isOverDue = compareAsc(task.taskDate, currentDate)
+     
+
+      if(isOverDue === -1) {
+        overDueText.style.display = "block"
+        taskElements.taskName.style.color = "#dc2626";
+      }else{
+        overDueText.style.display = "none"
+      }
+      
      
       //open dialog button event listener
       taskBtnElements.openDialogBtn.addEventListener("click", (event) => {
@@ -213,7 +232,8 @@ export function createMain() {
         detailsElements.taskNameDialog.textContent = task.taskName;
         detailsElements.taskDescription.textContent = task.taskDescription;
         detailsElements.taskDate.textContent =  formattedDate ? formattedDate : "No Date";
-        detailsElements.taskPriority.textContent = `Priority: ${task.taskPriority}`;
+        detailsElements.taskPriority.textContent = task.taskPriority;
+        detailsElements.taskStatus.textContent = task.isTaskDone === true ? "Done" : "On going"
 
         dialogElements.taskDetailsDialog.showModal();
       });
@@ -249,9 +269,7 @@ export function createMain() {
         dialogForm.showModal();       
       });
 
-      
-
-     // const isCHecked = taskElements.taskCheckBox.checked = false; 
+      //event listener for checkbox input
       taskElements.taskCheckBox.addEventListener("click", () => {
 
         currentTaskId = task.taskId;
@@ -261,12 +279,26 @@ export function createMain() {
       if(taskElements.taskCheckBox.checked === true ){
         taskElements.taskName.style.textDecoration = "line-through";
         taskElements.taskName.style.opacity = "0.5"
+        taskElements.taskName.style.color = "black";
+
+        overDueText.style.display = "none"
 
         myTask[taskIndex].isTaskDone = true; 
+
+      }else if (taskElements.taskCheckBox.checked === false && isOverDue === -1) {
+        taskElements.taskName.style.color = "#dc2626";
+        taskElements.taskName.style.textDecoration = "none";
+        taskElements.taskName.style.opacity = "1"
+
+        overDueText.style.display = "block"
+
+        myTask[taskIndex].isTaskDone = false; 
 
       }else {
         taskElements.taskName.style.textDecoration = "none";
         taskElements.taskName.style.opacity = "1"
+        overDueText.style.display = "none"
+
 
         myTask[taskIndex].isTaskDone = false; 
       }
@@ -301,6 +333,16 @@ export function createMain() {
         dialog.close()
       }
     });
+  }
+
+  function tomorrow() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1)
+
+    let tomorrowFormatted = format(tomorrow, "yyyy-MM-dd");
+
+    return tomorrowFormatted
   }
    
 
