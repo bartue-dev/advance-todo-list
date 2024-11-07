@@ -140,8 +140,16 @@ main .main-project-container .task-container .task-item {
   margin-bottom: 10px;
 }
 
-main .task-item .task-title-name {
+main .task-item .task-name-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:10px;
+}
+
+main .task-item .task-name-wrapper .task-title-name {
   font-weight: 400;
+  font-size: 1.1rem;
 }
 
 main .task-item > h2,
