@@ -135,9 +135,13 @@
 .my-project-element {
   display: flex;
   align-items: center;
+  justify-content: start;
+  height: 50px;
   gap: 15px;
   padding: 10px;
   border-radius: 5px;
+  outline: none;
+  border: none;
   cursor: pointer;
   background-color: transparent;
   width: 100%;
@@ -168,9 +172,9 @@
 }
 
 .my-project-element .project-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  
 }
 
 .my-project-element .close-icon {
