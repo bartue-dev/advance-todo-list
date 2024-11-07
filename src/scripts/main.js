@@ -139,6 +139,7 @@ export function createMain() {
     //filtered the myTask array to return a specific tasks base on project/project name
     const filteredTask = myTask.filter(task => task.projectName === sidebarProject.getCurrentProject());
 
+    //avoid duplicates when render the each task
     taskCon.innerHTML = "";  
 
     //loop through the filtered task to display it to the DOM with the specified project
@@ -155,6 +156,8 @@ export function createMain() {
 
       const taskElements = {
         taskEl: createEl("div"),
+        taskNameWrapper: createEl("div"),
+        taskCheckBox: createEl("input"),
         taskName: createEl("h2"),
         taskBtnCon: createEl("div"),
       }
@@ -162,6 +165,14 @@ export function createMain() {
       taskElements.taskEl.classList.add("task-item");
       taskElements.taskBtnCon.classList.add("taskEl-button-container");
       taskElements.taskName.classList.add("task-title-name");
+      taskElements.taskNameWrapper.classList.add("task-name-wrapper");
+
+      taskElements.taskCheckBox.type = "checkbox";
+      taskElements.taskCheckBox.name = "isTaskDone";
+      taskElements.taskCheckBox.value = "done";
+      taskElements.taskCheckBox.setAttribute("id", "checkbox");
+
+      
       //display the task name
       taskElements.taskName.textContent = task.taskName;
 
@@ -189,7 +200,8 @@ export function createMain() {
       taskBtnElements.editTaskBtn.appendChild(taskBtnIcons.editIcon);
       taskBtnElements.openDialogBtn.appendChild(taskBtnIcons.arrowIcon);
 
-      taskElements.taskEl.appendChild(taskElements.taskName);
+      taskElements.taskNameWrapper.append(taskElements.taskCheckBox, taskElements.taskName)
+      taskElements.taskEl.appendChild(taskElements.taskNameWrapper);
       taskElements.taskEl.appendChild(taskElements.taskBtnCon);
 
       taskCon.appendChild(taskElements.taskEl)
@@ -219,6 +231,7 @@ export function createMain() {
         console.log(myTask);
       });
       
+      //event listener for edit task button
       taskBtnElements.editTaskBtn.addEventListener("click", (event) => {
         event.preventDefault();
   
@@ -235,7 +248,35 @@ export function createMain() {
 
         dialogForm.showModal();       
       });
+
       
+
+     // const isCHecked = taskElements.taskCheckBox.checked = false; 
+      taskElements.taskCheckBox.addEventListener("click", () => {
+
+        currentTaskId = task.taskId;
+
+        const taskIndex = myTask.findIndex(task => task.taskId === currentTaskId);
+
+      if(taskElements.taskCheckBox.checked === true ){
+        taskElements.taskName.style.textDecoration = "line-through";
+        taskElements.taskName.style.opacity = "0.5"
+
+        myTask[taskIndex].isTaskDone = true; 
+
+      }else {
+        taskElements.taskName.style.textDecoration = "none";
+        taskElements.taskName.style.opacity = "1"
+
+        myTask[taskIndex].isTaskDone = false; 
+      }
+
+      console.log("task Index",myTask[taskIndex]);
+      });
+
+    
+      
+
     });
      
   }
