@@ -15,7 +15,7 @@ export function createDOM() {
   logo.src = logoImage;
 
   const appName = document.createElement("h1");
-  appName.textContent = "tasknest";
+  appName.textContent = "ToDoList";
 
   headerCon.appendChild(logo);
   headerCon.appendChild(appName);
