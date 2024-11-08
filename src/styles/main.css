@@ -128,9 +128,15 @@ main .dialog-form::backdrop {
   opacity: 1;
 }
 
+main .main-project-container {
+  overflow: auto;
+}
+
 main .main-project-container .task-container {
   margin-top: 20px;
   margin-bottom: 20px;
+
+
 }
 
 main .main-project-container .task-container .task-item {
@@ -160,6 +166,20 @@ main .task-item > h3 {
 
 main .task-item > h3 {
   font-weight: 400;
+}
+
+main .task-item .taskEl-button-container {
+  display: flex;
+}
+
+main .overdue-text {
+ 
+  color: #dc2626;
+  font-style: italic;
+  font-size: 1rem;
+  text-transform: uppercase;
+
+
 }
 
 main .task-item .taskEl-button-container > button {
@@ -209,18 +229,6 @@ main .task-details-dialog .details-container > h1 {
 
   font-weight: 700;
 }
-
-main .overdue-text {
-  align-self: center;
-  color: #dc2626;
-  font-style: italic;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-
-  display: none;
-  margin-top: -18px;
-}
-
 
 main .task-details-dialog .details-container > h2 {
   font-weight: 400;
