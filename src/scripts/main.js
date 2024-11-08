@@ -136,10 +136,7 @@ export function createMain() {
 
   mainCon.appendChild(dialogElements.taskDetailsDialog);
 
-  const overDueText = document.createElement("div")
-  overDueText.textContent = "over-due"
-  overDueText.classList.add("overdue-text");
-  dialogElements.detailsCon.prepend(overDueText)
+
 
   //render the task list to the DOM!
   function renderTaskList(){
@@ -213,15 +210,26 @@ export function createMain() {
 
       taskCon.appendChild(taskElements.taskEl);
 
-      let currentDate = new Date().toJSON().slice(0, 10)
-      const isOverDue = compareAsc(task.taskDate, currentDate)
-     
+      const overDueText = document.createElement("div")
+      overDueText.textContent = "over-due"
+      overDueText.classList.add("overdue-text");
 
+      let currentDate = new Date().toJSON().slice(0, 10)
+      //return 1 if the first date is after the second, -1 if the first date is before the second or 0 if dates are equal.
+      const isOverDue = compareAsc(inputDate, currentDate)
+     
+      console.log(isOverDue);
+      
       if(isOverDue === -1) {
-        overDueText.style.display = "block"
+      
+        taskElements.taskBtnCon.prepend(overDueText);
+ 
         taskElements.taskName.style.color = "#dc2626";
-      }else{
-        overDueText.style.display = "none"
+      }else if(isNaN(isOverDue)) {
+        taskElements.taskName.style.color = "black";
+      }
+      else{
+        taskElements.taskName.style.color = "black";
       }
       
      
@@ -280,6 +288,11 @@ export function createMain() {
         taskElements.taskName.style.textDecoration = "line-through";
         taskElements.taskName.style.opacity = "0.5"
         taskElements.taskName.style.color = "black";
+      
+        Object.values(taskBtnElements).forEach(btn => {
+          btn.disabled = true
+          btn.style.opacity = "0.5"
+        });
 
         overDueText.style.display = "none"
 
@@ -292,12 +305,21 @@ export function createMain() {
 
         overDueText.style.display = "block"
 
+        Object.values(taskBtnElements).forEach(btn => {
+          btn.disabled = false
+          btn.style.opacity = "1"
+        });
+
         myTask[taskIndex].isTaskDone = false; 
 
       }else {
         taskElements.taskName.style.textDecoration = "none";
         taskElements.taskName.style.opacity = "1"
-        overDueText.style.display = "none"
+
+        Object.values(taskBtnElements).forEach(btn => {
+          btn.disabled = false
+          btn.style.opacity = "1"
+        });
 
 
         myTask[taskIndex].isTaskDone = false; 
@@ -306,7 +328,30 @@ export function createMain() {
       console.log("task Index",myTask[taskIndex]);
       });
 
-    
+     //remain the state of the check box element and style if the checkbox is true otherwise normal styling
+      if(task.isTaskDone === true){
+        taskElements.taskName.style.textDecoration = "line-through";
+        taskElements.taskName.style.opacity = "0.5"
+        taskElements.taskName.style.color = "black";
+        taskElements.taskCheckBox.checked = true
+      
+        Object.values(taskBtnElements).forEach(btn => {
+          btn.disabled = true
+          btn.style.opacity = "0.5"
+        });
+
+        overDueText.style.display = "none"
+
+      }else {
+        taskElements.taskName.style.textDecoration = "none";
+        taskElements.taskName.style.opacity = "1"
+        taskElements.taskCheckBox.checked = false
+
+        Object.values(taskBtnElements).forEach(btn => {
+          btn.disabled = false
+          btn.style.opacity = "1"
+        });
+      }
       
 
     });
