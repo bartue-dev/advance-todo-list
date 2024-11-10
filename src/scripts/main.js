@@ -17,6 +17,7 @@ export function createMain() {
   const projectTitle = DOM.projectTitle;
   const mainProjectCon = DOM.mainProjectCon;
   const taskCon = DOM.taskCon;
+  const statusBtns = DOM.statusBtns
   let currentTaskId;
   let isEditBtn = true;
   let taskId = 0;
@@ -25,14 +26,18 @@ export function createMain() {
 
   //function to display the project to main/export to project js
   function displayProjectToMain(project, myProjectEl) {
-    document.querySelectorAll(".my-project-element").forEach(content => {
-      content.classList.remove("active");
+    document.querySelectorAll(".my-project-element-container").forEach(element => {
+      element.classList.remove("active");
     });
 
     myProjectEl.classList.add("active");
 
     projectTitle.textContent = project;
     mainCon.appendChild(mainProjectCon);
+
+    Object.values(statusBtns).forEach(btn => {
+      btn.removeAttribute("class")
+    });
 
     //render the task list every time a project is clicked
     renderTaskList()
@@ -48,6 +53,9 @@ export function createMain() {
       DOM.formInputs.addTaskBtn.textContent = "Add task"
     }
     taskForm.reset();
+
+    console.log(myTask);
+    
   });
 
   //dialog box for form
@@ -80,11 +88,11 @@ export function createMain() {
         taskId: currentTaskId,
       }
   }
-  console.log("my Task array:",myTask);
-  renderTaskList();
-  taskForm.reset();
-  
-  dialogForm.close();
+    console.log("my Task array:",myTask);
+    renderTaskList();
+    taskForm.reset();
+    
+    dialogForm.close();
     
   });
   
@@ -393,6 +401,8 @@ export function createMain() {
 
   return {
     displayProjectToMain,
+    myTask,
+    renderTaskList
   }
   
 }
