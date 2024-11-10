@@ -51,6 +51,10 @@
   background-color: #e2e8f0;
 }
 
+.status-container > button.active {
+  background-color: #e2e8f0;
+}
+
 /* projects */
 .projects-container {
   margin-top: 10px;
@@ -132,27 +136,26 @@
   border-radius: 5px;
 }
 
-.my-project-element {
+.my-project-element-container {
   display: flex;
   align-items: center;
   justify-content: start;
   height: 50px;
   gap: 15px;
-  padding: 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   cursor: pointer;
   background-color: transparent;
   width: 100%;
+
 }
 
-.my-project-element > button {
+.my-project-element-container > button {
   border: transparent;
-  margin-left: auto;
   outline: none;
   padding: 0 7px;
-  background-color: transparent;
+  background-color: blue;
   color: #a8a29e;
   cursor: pointer;
   width: 30px;
@@ -161,23 +164,24 @@
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+
 }
 
-.my-project-element:hover {
+.my-project-element-container:hover {
   background-color: #e2e8f0;
 }
 
-.my-project-element:hover > button {
+.my-project-element-container:hover > button {
   display: flex;
 }
 
-.my-project-element .project-icon {
+.my-project-element-container .project-icon {
   width: 15px;
   height: 15px;
   
 }
 
-.my-project-element .close-icon {
+.my-project-element-container .close-icon {
   width: 20px;
   height: 20px;
   object-fit: cover;
@@ -185,7 +189,17 @@
   flex-shrink: 0;
 }
 
-.my-project-element.active {
+.my-project-element-container.active {
   background-color: #e2e8f0;;
 }
+
+.my-project-element-container .my-project-element {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
 
