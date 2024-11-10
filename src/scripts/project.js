@@ -1,7 +1,7 @@
 import { DOM } from "./DOM";
+import { main } from "./main";
 import projectIcon from "../../assets/images/project.png";
 import closeIcon from "../../assets/images/close.png";
-import { main } from "./main";
 
 export function projects() {
 
@@ -13,6 +13,10 @@ export function projects() {
   const projectForm = DOM.projectForm;
   const projectInput = DOM.projectInput;
   const cancelBtn = DOM.formBtns.cancelBtn;
+  const mainCon = DOM.mainCon
+  const mainProjectCon = DOM.mainProjectCon
+  const projectTitle = DOM.projectTitle
+  let myTask = main.myTask;
 
   //event listener for add project button
   addProjectBtn.addEventListener("click", (event) => {
@@ -52,8 +56,19 @@ export function projects() {
     projectForm.style.display = "none";
     addProjectBtn.style.display = "flex";
     projectForm.reset();
-  
 
+    if(myProjects.length > 0){
+      const lastProject = myProjects[myProjects.length - 1]
+      const projectElement = document.querySelectorAll(".my-project-element-container");
+      const lastProjectElement = projectElement[projectElement.length - 1];
+      
+      currentProject = lastProject;
+      console.log(currentProject);
+      
+      main.displayProjectToMain(currentProject, lastProjectElement);
+    }
+  
+   
     console.log(myProjects);
     
   });
@@ -68,21 +83,12 @@ export function projects() {
   });
 
 
-  //event listener for project remove button
-  function handleRemoveProjectBtn(event, index) {
-    event.preventDefault();
-
-    myProjects.splice(index, 1);
-    renderListOfProjects();
-    projectForm.reset();
-  }
-
-
   function renderListOfProjects() {
     projectListCon.innerHTML = "";
 
     myProjects.forEach((project,index) => {
       const myProjectEl = document.createElement("div");
+      const taskNameCon = document.createElement("div");
       const removeBtn = document.createElement("button");
       const removeBtnIconEl = document.createElement("img");
       const projectIconEl = document.createElement("img");
@@ -90,19 +96,54 @@ export function projects() {
       projectIconEl.src = projectIcon; 
       removeBtnIconEl.src = closeIcon
       removeBtn.appendChild(removeBtnIconEl);
-      myProjectEl.classList.add("my-project-element");
+      myProjectEl.classList.add("my-project-element-container");
+      taskNameCon.classList.add("my-project-element")
       projectIconEl.classList.add("project-icon");
       removeBtnIconEl.classList.add("close-icon");
-      
-      myProjectEl.append(projectIconEl,project, removeBtn);
-      projectListCon.appendChild(myProjectEl);
 
-      removeBtn.addEventListener("click", (event) => handleRemoveProjectBtn(event, index));
+      taskNameCon.textContent = project
+      
+      myProjectEl.append(projectIconEl, taskNameCon, removeBtn);
+      projectListCon.appendChild(myProjectEl);
+  
+      
+      
+
+      //event listener for remove project button
+      removeBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        myProjects.splice(index, 1);
+        renderListOfProjects();
+    
+        //if a project is remove then the task that have name of the project will be remove also
+        console.log("myTask before:", myTask);
+        myTask = myTask.filter(task => task.projectName !== project)
+        console.log("myTask after:", myTask);
+        
+        if(myProjects.length > 0) {
+          const lastProject = myProjects[myProjects.length - 1]
+          const projectElement = document.querySelectorAll(".my-project-element-container");
+          const lastProjectElement = projectElement[projectElement.length - 1];
+          
+          currentProject = lastProject;
+          console.log(currentProject);
+          
+          main.displayProjectToMain(currentProject, lastProjectElement);
+        }else {
+          currentProject = null;
+          mainCon.removeChild(mainProjectCon)
+        }
+       
+
+      });
 
       //display the project to main
-      myProjectEl.addEventListener("click", () => {
+      taskNameCon.addEventListener("click", () => {
         currentProject = project
-        main.displayProjectToMain(project, myProjectEl)
+        main.displayProjectToMain(project, myProjectEl);
+
+        console.log("From clicked project element",currentProject);
       });
 
     }); 
