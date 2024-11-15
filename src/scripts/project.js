@@ -1,22 +1,47 @@
-import { DOM } from "./DOM";
-import { main } from "./main";
+import { createDOM } from "./DOM";
+import { createMain } from "./main";
+import { sidebarStatus } from "./status";
+import { handlersFunctions } from "./handlers";
 import projectIcon from "../../assets/images/project.png";
 import closeIcon from "../../assets/images/close.png";
 
-export function projects() {
-
-  const myProjects = [];
+export const sidebarProject = (() => {
+  const myProjects = JSON.parse(localStorage.getItem("project")) || [];
+  let myTask = createMain.myTask;
   let currentProject;
 
-  const projectListCon = DOM.projectListCon;
-  const addProjectBtn = DOM.addProjectBtn;
-  const projectForm = DOM.projectForm;
-  const projectInput = DOM.projectInput;
-  const cancelBtn = DOM.formBtns.cancelBtn;
-  const mainCon = DOM.mainCon
-  const mainProjectCon = DOM.mainProjectCon
-  const projectTitle = DOM.projectTitle
-  let myTask = main.myTask;
+  function projectState() {
+    const currentProjectEl = localStorage.getItem("viewStatus");
+    //if(currentProjectEl !== null){
+      const projectElements = document.querySelectorAll(".my-project-element");
+
+      let i = 0
+      while (i < projectElements.length) {
+        if(projectElements[i].textContent === currentProjectEl){
+          projectElements[i].click();
+          break;
+        }
+        i++
+      }
+    //}
+  }
+
+  const projectListCon = createDOM.projectListCon;
+  const addProjectBtn = createDOM.addProjectBtn;
+  const projectForm = createDOM.projectForm;
+  const projectInput = createDOM.projectInput;
+  const cancelBtn = createDOM.formBtns.cancelBtn;
+  const mainCon = createDOM.mainCon
+  const mainProjectCon = createDOM.mainProjectCon
+
+
+  const noProjectMessage = document.createElement("div");
+  noProjectMessage.classList.add("no-project-message")
+  noProjectMessage.textContent = "Your project list is empty. Time to create a new one"
+  mainCon.appendChild(noProjectMessage);
+  
+
+ // renderListOfProjects();
 
   //event listener for add project button
   addProjectBtn.addEventListener("click", (event) => {
@@ -63,11 +88,20 @@ export function projects() {
       const lastProjectElement = projectElement[projectElement.length - 1];
       
       currentProject = lastProject;
-      console.log(currentProject);
       
-      main.displayProjectToMain(currentProject, lastProjectElement);
+      createMain.displayProjectToMain(currentProject, lastProjectElement);
     }
   
+    if(mainCon.contains(sidebarStatus.statusName)){
+      mainCon.removeChild(sidebarStatus.statusName)
+    }
+
+    if(mainCon.contains(handlersFunctions.emptyMessageCon)){
+      handlersFunctions.emptyMessageCon.style.display = "none"
+    }
+
+  
+    handlersFunctions.saveProjectToLocalStorage(myProjects);
    
     console.log(myProjects);
     
@@ -105,9 +139,6 @@ export function projects() {
       
       myProjectEl.append(projectIconEl, taskNameCon, removeBtn);
       projectListCon.appendChild(myProjectEl);
-  
-      
-      
 
       //event listener for remove project button
       removeBtn.addEventListener("click", (event) => {
@@ -118,9 +149,10 @@ export function projects() {
     
         //if a project is remove then the task that have name of the project will be remove also
         console.log("myTask before:", myTask);
-        myTask = myTask.filter(task => task.projectName !== project)
+        removeTaskFromProject(project);
         console.log("myTask after:", myTask);
         
+        //update the state of the project. If project remove it will display the last project name in the main and also all of its tasks
         if(myProjects.length > 0) {
           const lastProject = myProjects[myProjects.length - 1]
           const projectElement = document.querySelectorAll(".my-project-element-container");
@@ -129,31 +161,74 @@ export function projects() {
           currentProject = lastProject;
           console.log(currentProject);
           
-          main.displayProjectToMain(currentProject, lastProjectElement);
-        }else {
+          createMain.displayProjectToMain(currentProject, lastProjectElement);
+        }
+        //if the myProject.length is 0 then it removes the mainProjectElement from the main container
+        else if(myProjects.length === 0) {
           currentProject = null;
-          mainCon.removeChild(mainProjectCon)
+          mainCon.removeChild(mainProjectCon);
+          noProjectMessage.style.display = "block"
+
         }
        
+        handlersFunctions.saveProjectToLocalStorage(myProjects);
+        handlersFunctions.saveTaskToLocalStorage(myTask)
+
 
       });
 
       //display the project to main
       taskNameCon.addEventListener("click", () => {
         currentProject = project
-        main.displayProjectToMain(project, myProjectEl);
+        createMain.displayProjectToMain(project, myProjectEl);
 
-        console.log("From clicked project element",currentProject);
+        const containers = {
+          tomorrowListTaskCon: createMain.tomorrowListTaskCon,
+          todayListCon: createMain.todayListCon,
+          completedListTaskCon: createMain.completedListTaskCon
+        }
+
+        Object.values(containers).forEach(container => {
+          if(mainCon.contains(container)){
+            mainCon.removeChild(container)
+          }
+        })
+
+        if(mainCon.contains(sidebarStatus.statusName)){
+          mainCon.removeChild(sidebarStatus.statusName)
+        }
+
+        if(mainCon.contains(handlersFunctions.emptyMessageCon)){
+          handlersFunctions.emptyMessageCon.style.display = "none"
+        }
+
+        localStorage.setItem("viewStatus", project)
       });
 
+
     }); 
+
+    handlersFunctions.saveProjectToLocalStorage(myProjects);
+    handlersFunctions.saveTaskToLocalStorage(myTask)
+
+  }
+
+  //remove task if the project is remove
+  function removeTaskFromProject(project) {    
+    let i = 0;
+    while(i < myTask.length){
+      if(myTask[i].projectName === project){
+        myTask.splice(i,1)
+      }
+      i++
+    }
   }
 
 
   return {
     myProjects,
-    getCurrentProject: () => currentProject 
+    getCurrentProject: () => currentProject, 
+    renderListOfProjects,
+    projectState
   }
-}
-
-export const sidebarProject = projects();
+})();
