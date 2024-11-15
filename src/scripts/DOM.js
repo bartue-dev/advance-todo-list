@@ -2,6 +2,7 @@ import todayImage from "../../assets/images/today.png";
 import tomorrowImage from "../../assets/images/tomorrow.png";
 import completedImage from "../../assets/images/successful.png";
 import logoImage from "../../assets/images/logo.png";
+import githubIcon from "../../assets/images/github.svg"
 
 
 
@@ -242,13 +243,30 @@ export const createDOM = (() => {
  taskBtnCon.appendChild(formInputs.addTaskBtn);
  taskForm.appendChild(taskBtnCon);
 
- 
-
-
-
-
 
  //footer
+ const footerCon = document.querySelector("footer")
+ const footerInfoCon = document.createElement("div");
+ footerInfoCon.classList.add("footer-info-container");
+ 
+ const infoCon = document.createElement("p");
+ const imageCOn = document.createElement("div");
+ const githubImage = document.createElement("img");
+
+ imageCOn.classList.add("image-container")
+
+ infoCon.textContent = "Created by bartue.dev";
+ githubImage.src = githubIcon
+ imageCOn.appendChild(githubImage)
+
+ footerInfoCon.appendChild(infoCon);
+ footerInfoCon.appendChild(imageCOn);
+
+ footerCon.appendChild(footerInfoCon);
+
+ footerInfoCon.addEventListener("click", () => {
+  window.open("https://github.com/bartue-dev/advance-todo-list", "_blank")
+ });
 
  return {
    statusBtns,
