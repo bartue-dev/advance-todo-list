@@ -1,27 +1,24 @@
-import deleteImage from "../../assets/images/delete.png";
-import editImage from "../../assets/images/edit.png";
-import arrowImage from "../../assets/images/next.png"
-import { DOM  } from "./DOM";
-import { format, parseISO, isValid, compareAsc } from "date-fns"
+import { createDOM  } from "./DOM";
+import { format} from "date-fns"
 import { sidebarProject } from "./project";
+import { sidebarStatus } from "./status";
+import { handlersFunctions } from "./handlers";
 
-export function createMain() {
 
-  const myTask = [];
-
-  const mainCon = DOM.mainCon;
-  const taskForm = DOM.taskForm;
-  const createTaskBtn = DOM.createTaskBtn;
-  const taskFormCancelBtn = DOM.formInputs.cancelTaskBtn;
-  const taskFormAddBtn = DOM.formInputs.addTaskBtn;
-  const projectTitle = DOM.projectTitle;
-  const mainProjectCon = DOM.mainProjectCon;
-  const taskCon = DOM.taskCon;
-  const statusBtns = DOM.statusBtns
-  let currentTaskId;
+export const createMain = (() => {
+  const myTask = JSON.parse(localStorage.getItem("task")) || [];
   let isEditBtn = true;
   let taskId = 0;
-  
+
+  const mainCon = createDOM.mainCon;
+  const taskForm = createDOM.taskForm;
+  const createTaskBtn = createDOM.createTaskBtn;
+  const taskFormCancelBtn = createDOM.formInputs.cancelTaskBtn;
+  const taskFormAddBtn = createDOM.formInputs.addTaskBtn;
+  const projectTitle = createDOM.projectTitle;
+  const mainProjectCon = createDOM.mainProjectCon;
+  const taskCon = createDOM.taskCon;
+  const statusBtns = createDOM.statusBtns
 
 
   //function to display the project to main/export to project js
@@ -40,17 +37,18 @@ export function createMain() {
     });
 
     //render the task list every time a project is clicked
-    renderTaskList()
+    renderTaskList();
+
+    handlersFunctions.saveTaskToLocalStorage(myTask)
   }
 
   //create task button (+)
   createTaskBtn.addEventListener("click", (event) =>{
     event.preventDefault();
     dialogForm.showModal();   
-    console.log("current task Id",currentTaskId);
     
     if(isEditBtn) {
-      DOM.formInputs.addTaskBtn.textContent = "Add task"
+      taskFormAddBtn.textContent = "Add task"
     }
     taskForm.reset();
 
@@ -78,14 +76,19 @@ export function createMain() {
         taskId: taskId++,
       }
       myTask.push(taskData);
+
      
     }else {
-      const taskIndex = myTask.findIndex(t => t.taskId === currentTaskId)
+      console.log(handlersFunctions.getCurrentTaskId())
+      const taskIndex = myTask.findIndex(t => t.taskId === handlersFunctions.getCurrentTaskId())
+
+      console.log("Update task button:", taskIndex);
+      
 
       myTask[taskIndex] = {
         ...formEntries,
-      projectName: sidebarProject.getCurrentProject(),
-        taskId: currentTaskId,
+        projectName: sidebarProject.getCurrentProject(),
+        taskId: handlersFunctions.getCurrentTaskId(),
       }
   }
     console.log("my Task array:",myTask);
@@ -93,6 +96,9 @@ export function createMain() {
     taskForm.reset();
     
     dialogForm.close();
+
+    handlersFunctions.saveTaskToLocalStorage(myTask)
+
     
   });
   
@@ -103,46 +109,7 @@ export function createMain() {
     dialogForm.close();
   });
 
-  //create a dialog for task details
-  const dialogElements = {
-    taskDetailsDialog: createEl("dialog"),
-    taskDialogTitle: createEl("h1"),
-    detailsCon: createEl("div"),
-  }
-
-  dialogElements.taskDetailsDialog.classList.add("task-details-dialog"); 
-  dialogElements.detailsCon.classList.add("details-container");
-  dialogElements.taskDialogTitle.textContent = "Task Details";
-
-  closeDialogScreen(dialogElements.taskDetailsDialog);
-
-  const detailsElements = {
-    myTaskName: createEl("h1"),
-    taskNameDialog: createEl("h2"),
-    myDescription: createEl("h1"),
-    taskDescription: createEl("h2"),
-    myDate: createEl("h1"),
-    taskDate: createEl("h2"),
-    myPriority: createEl("h1"),
-    taskPriority: createEl("h2"),
-    myTaskStatus: createEl("h1"),
-    taskStatus: createEl("h2"),
-  }
-
-  detailsElements.myTaskName.textContent = "Task"
-  detailsElements.myDescription.textContent = "Description"
-  detailsElements.myDate.textContent = "Date"
-  detailsElements.myPriority.textContent = "Priority"
-  detailsElements.myTaskStatus.textContent = "Status"
-
-  Object.values(detailsElements).forEach(elements => {
-    dialogElements.detailsCon.appendChild(elements);
-  });
-
-  dialogElements.taskDetailsDialog.appendChild(dialogElements.taskDialogTitle);
-  dialogElements.taskDetailsDialog.appendChild(dialogElements.detailsCon); 
-
-  mainCon.appendChild(dialogElements.taskDetailsDialog);
+ 
 
 
 
@@ -152,259 +119,131 @@ export function createMain() {
     //filtered the myTask array to return a specific tasks base on project/project name
     const filteredTask = myTask.filter(task => task.projectName === sidebarProject.getCurrentProject());
 
-    //avoid duplicates when render the each task
+    //avoid duplicates when render each task
     taskCon.innerHTML = "";  
 
     //loop through the filtered task to display it to the DOM with the specified project
     filteredTask.forEach(task => {
 
-      //format the date using the date fns library
-      const inputDate = task.taskDate;  
-      const parsedDate  = parseISO(inputDate);
-      let formattedDate;
+     handlersFunctions.displayTask({
+      task: task, 
+      myTask: myTask,
+      isEditBtn: isEditBtn,
+      dialogForm: dialogForm,
+      container: taskCon
+    });
 
-      if(isValid(parsedDate)){  
-        formattedDate = format(parsedDate, "MMM dd, yyyy");
-      }
 
-      const taskElements = {
-        taskEl: createEl("div"),
-        taskNameWrapper: createEl("div"),
-        taskCheckBox: createEl("input"),
-        taskName: createEl("h2"),
-        taskBtnCon: createEl("div"),
-      }
-
-      taskElements.taskEl.classList.add("task-item");
-      taskElements.taskBtnCon.classList.add("taskEl-button-container");
-      taskElements.taskName.classList.add("task-title-name");
-      taskElements.taskNameWrapper.classList.add("task-name-wrapper");
-
-      taskElements.taskCheckBox.type = "checkbox";
-      taskElements.taskCheckBox.name = "isTaskDone";
-      taskElements.taskCheckBox.value = "done";
-
-      
-      //display the task name
-      taskElements.taskName.textContent = task.taskName;
-
-      const taskBtnIcons = {
-        deleteIcon: createEl("img"),
-        editIcon: createEl("img"),
-        arrowIcon: createEl("img"),
-      }
-
-      taskBtnIcons.deleteIcon.src = deleteImage;
-      taskBtnIcons.editIcon.src = editImage;
-      taskBtnIcons.arrowIcon.src= arrowImage;
-
-      const taskBtnElements = {
-        deleteTaskBtn: createEl("button"),
-        editTaskBtn: createEl("button"),
-        openDialogBtn: createEl("button"),
-      }
-
-      Object.values(taskBtnElements).forEach(elements => {
-        taskElements.taskBtnCon.append(elements);
-      });
-
-      taskBtnElements.deleteTaskBtn.appendChild(taskBtnIcons.deleteIcon);
-      taskBtnElements.editTaskBtn.appendChild(taskBtnIcons.editIcon);
-      taskBtnElements.openDialogBtn.appendChild(taskBtnIcons.arrowIcon);
-
-      taskElements.taskNameWrapper.append(taskElements.taskCheckBox, taskElements.taskName)
-      taskElements.taskEl.appendChild(taskElements.taskNameWrapper);
-      taskElements.taskEl.appendChild(taskElements.taskBtnCon);
-
-      taskCon.appendChild(taskElements.taskEl);
-
-      const overDueText = document.createElement("div")
-      overDueText.textContent = "over-due"
-      overDueText.classList.add("overdue-text");
-
-      let currentDate = new Date().toJSON().slice(0, 10)
-      //return 1 if the first date is after the second, -1 if the first date is before the second or 0 if dates are equal.
-      const isOverDue = compareAsc(inputDate, currentDate)
+    });
      
-      console.log(isOverDue);
-      
-      if(isOverDue === -1) {
-      
-        taskElements.taskBtnCon.prepend(overDueText);
- 
-        taskElements.taskName.style.color = "#dc2626";
-      }else if(isNaN(isOverDue)) {
-        taskElements.taskName.style.color = "black";
-      }
-      else{
-        taskElements.taskName.style.color = "black";
-      }
-      
-     
-      //open dialog button event listener
-      taskBtnElements.openDialogBtn.addEventListener("click", (event) => {
-        event.preventDefault();
+  }
 
-        detailsElements.taskNameDialog.textContent = task.taskName;
-        detailsElements.taskDescription.textContent = task.taskDescription;
-        detailsElements.taskDate.textContent =  formattedDate ? formattedDate : "No Date";
-        detailsElements.taskPriority.textContent = task.taskPriority;
-        detailsElements.taskStatus.textContent = task.isTaskDone === true ? "Done" : "On going"
-
-        dialogElements.taskDetailsDialog.showModal();
-      });
-
-      //delete task button/icon. Delete base on index
-      taskBtnElements.deleteTaskBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-
-        //use findIndex method to original array and filtered array using the id to get the its INDEX 
-        const toDeleteTaskIndex = myTask.findIndex(deleteTask => deleteTask.taskId === task.taskId);
-        console.log("Delete task Index:", toDeleteTaskIndex);
-        
-        myTask.splice(toDeleteTaskIndex, 1)
-        renderTaskList(); 
-        console.log(myTask);
-      });
-      
-      //event listener for edit task button
-      taskBtnElements.editTaskBtn.addEventListener("click", (event) => {
-        event.preventDefault();
+  const tomorrowListTaskCon = document.createElement("div");
+  tomorrowListTaskCon.classList.add("tomorrow-list-container");
+  console.log("Name:",name);
   
-        currentTaskId = task.taskId;
 
-        DOM.formInputs.taskName.value = task.taskName;
-        DOM.formInputs.taskDescription.value = task.taskDescription;
-        DOM.formInputs.taskDate.value = task.taskDate;
-        DOM.formInputs.taskPriority.value = task.taskPriority;
-
-        if(isEditBtn){
-          DOM.formInputs.addTaskBtn.textContent = "Update task"
-        }      
-
-        dialogForm.showModal();       
-      });
-
-      //event listener for checkbox input
-      taskElements.taskCheckBox.addEventListener("click", () => {
-
-        currentTaskId = task.taskId;
-
-        const taskIndex = myTask.findIndex(task => task.taskId === currentTaskId);
-
-      if(taskElements.taskCheckBox.checked === true ){
-        taskElements.taskName.style.textDecoration = "line-through";
-        taskElements.taskName.style.opacity = "0.5"
-        taskElements.taskName.style.color = "black";
-      
-        Object.values(taskBtnElements).forEach(btn => {
-          btn.disabled = true
-          btn.style.opacity = "0.5"
-        });
-
-        overDueText.style.display = "none"
-
-        myTask[taskIndex].isTaskDone = true; 
-
-      }else if (taskElements.taskCheckBox.checked === false && isOverDue === -1) {
-        taskElements.taskName.style.color = "#dc2626";
-        taskElements.taskName.style.textDecoration = "none";
-        taskElements.taskName.style.opacity = "1"
-
-        overDueText.style.display = "block"
-
-        Object.values(taskBtnElements).forEach(btn => {
-          btn.disabled = false
-          btn.style.opacity = "1"
-        });
-
-        myTask[taskIndex].isTaskDone = false; 
-
-      }else {
-        taskElements.taskName.style.textDecoration = "none";
-        taskElements.taskName.style.opacity = "1"
-
-        Object.values(taskBtnElements).forEach(btn => {
-          btn.disabled = false
-          btn.style.opacity = "1"
-        });
-
-
-        myTask[taskIndex].isTaskDone = false; 
-      }
-
-      console.log("task Index",myTask[taskIndex]);
-      });
-
-     //remain the state of the check box element and style if the checkbox is true otherwise normal styling
-      if(task.isTaskDone === true){
-        taskElements.taskName.style.textDecoration = "line-through";
-        taskElements.taskName.style.opacity = "0.5"
-        taskElements.taskName.style.color = "black";
-        taskElements.taskCheckBox.checked = true
-      
-        Object.values(taskBtnElements).forEach(btn => {
-          btn.disabled = true
-          btn.style.opacity = "0.5"
-        });
-
-        overDueText.style.display = "none"
-
-      }else {
-        taskElements.taskName.style.textDecoration = "none";
-        taskElements.taskName.style.opacity = "1"
-        taskElements.taskCheckBox.checked = false
-
-        Object.values(taskBtnElements).forEach(btn => {
-          btn.disabled = false
-          btn.style.opacity = "1"
-        });
-      }
-      
-
-    });
-     
-  }
-
-  //reuseable function for creating an element
-  function createEl(element) {
-    const myElement = document.createElement(element);
-
-    return myElement
-  }
-
-  //reusable function to close dialog when clicked outside
-  function closeDialogScreen(dialog){
-    dialog.addEventListener("click", e => {
-      const dialogDimensions = dialog.getBoundingClientRect()
-      if (
-        e.clientX < dialogDimensions.left ||
-        e.clientX > dialogDimensions.right ||
-        e.clientY < dialogDimensions.top ||
-        e.clientY > dialogDimensions.bottom
-      ) {
-        dialog.close()
-      }
-    });
-  }
-
-  function tomorrow() {
+  function renderTomorrowTask() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1)
 
-    let tomorrowFormatted = format(tomorrow, "yyyy-MM-dd");
 
-    return tomorrowFormatted
+    let tomorrowDate = format(tomorrow, "yyyy-MM-dd");
+
+
+    tomorrowListTaskCon.innerHTML = "";
+
+    const filteredTask = myTask.filter(task => task.taskDate === tomorrowDate);
+
+    handlersFunctions.emptyMessage(filteredTask, sidebarStatus.statusName);
+
+
+    filteredTask.forEach((task, index) => {
+
+      handlersFunctions.displayTask({
+        task: task,
+        myTask: myTask,
+        isEditBtn: isEditBtn,
+        dialogForm: dialogForm,
+        container:tomorrowListTaskCon,
+        })
+      
+    });
+    
+    console.log("Filtered task base on date",filteredTask)
   }
+
+  const todayListCon = document.createElement("div");
+  todayListCon.classList.add("today-list-container")
+
+  function renderTodayTask() {
+    let currentDate = new Date().toJSON().slice(0, 10)
+
+
+    todayListCon.innerHTML = "";
+
+    const filteredTask = myTask.filter(task => task.taskDate === currentDate) ;
+
+    handlersFunctions.emptyMessage(filteredTask, sidebarStatus.statusName);
+
+    filteredTask.forEach(task => {
+
+      handlersFunctions.displayTask({
+        task: task,
+        myTask: myTask,
+        isEditBtn: isEditBtn,
+        dialogForm: dialogForm,
+        container: todayListCon,
+        });
+
+    });
+
+  }
+
+  const completedListTaskCon = document.createElement("div");
+  completedListTaskCon.classList.add("completed-list-container")
+
+  function renderCompletedTask() {
+
+    completedListTaskCon.innerHTML = "";
+
+    const filteredTask = myTask.filter(task => task.isTaskDone === true);
+
+    handlersFunctions.emptyMessage(filteredTask, sidebarStatus.statusName);
+
+
+    filteredTask.forEach(task => {
+
+      handlersFunctions.displayTask({
+        task: task,
+        myTask: myTask,
+        isEditBtn: isEditBtn,
+        dialogForm: dialogForm,
+        container: completedListTaskCon,
+        });
+
+      
+    });
+    console.log("Completed task:",filteredTask)
+  }
+
+ 
+
+  
+
+  
    
 
   return {
     displayProjectToMain,
     myTask,
-    renderTaskList
+    renderTaskList,
+    renderTomorrowTask,
+    tomorrowListTaskCon,
+    renderTodayTask,
+    todayListCon,
+    renderCompletedTask,
+    completedListTaskCon,
   }
-  
-}
-
-export const main = createMain();
+})();
