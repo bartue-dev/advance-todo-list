@@ -140,8 +140,6 @@ export const createMain = (() => {
 
   const tomorrowListTaskCon = document.createElement("div");
   tomorrowListTaskCon.classList.add("tomorrow-list-container");
-  console.log("Name:",name);
-  
 
   function renderTomorrowTask() {
     const today = new Date();
@@ -171,7 +169,6 @@ export const createMain = (() => {
       
     });
     
-    console.log("Filtered task base on date",filteredTask)
   }
 
   const todayListCon = document.createElement("div");
