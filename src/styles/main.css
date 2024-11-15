@@ -5,6 +5,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  position: relative;
 }
 
 main .create-task-icon {
@@ -69,10 +70,12 @@ main .task-form input[name="taskName"] {
 
 main .task-form input[name="taskDate"] {
   grid-column: 1/2;
+  cursor: pointer;
 }
 main .task-form select {
   grid-column: 2/3;
   grid-row: 6/7;
+  cursor: pointer;
 }
 
 main .task-form .task-priority {
@@ -246,3 +249,45 @@ main .task-details-dialog .details-container {
   width: 300px;
   height: auto;
 }
+
+/* today, tomorrow, completed style */
+
+/* main .tomorrow-list-container {
+  display: flex;
+  flex-direction: column;
+
+} */
+
+main .tomorrow-list-container .task-item,
+main .today-list-container .task-item,
+main .completed-list-container .task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 10px;
+}
+
+main .status-name {
+  font-size: 1.2rem;
+}
+
+main .empty-container,
+main .no-project-message {
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+
+  font-style: italic;
+  font-size: 1rem;
+  opacity: 0.5;
+  position: absolute;
+  text-align: center
+}
+
+/* main .tomorrow-list-container .task-item > h1 {
+  font-size: 1.1rem;
+  font-weight: normal;
+} */
