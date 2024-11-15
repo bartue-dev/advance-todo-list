@@ -5,8 +5,44 @@ footer {
   grid-column: 1/7;
 
   box-shadow: 0 -1px 1px #404040;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-footer > h1 {
+footer .footer-info-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+footer .footer-info-container p {
   font-size: 1rem;
+  letter-spacing: 1px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  cursor: default;
+}
+
+footer .footer-info-container .image-container {
+  background-color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer .footer-info-container .image-container > img {
+  width: auto;
+  height: auto;
+
+  cursor: pointer;
 }
