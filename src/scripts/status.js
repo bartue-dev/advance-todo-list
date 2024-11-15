@@ -1,37 +1,146 @@
-import { DOM } from "./DOM";
+import { createDOM } from "./DOM";
+import { createMain } from "./main";
 
 
+export const sidebarStatus = (() => {
+  const statusBtns = createDOM.statusBtns
+ 
+  function statusBtnsState() {
+    if(localStorage.getItem("viewStatus") === "today"){
+      statusBtns.today.click()
+    }else if(localStorage.getItem("viewStatus") === "tomorrow"){
+      statusBtns.tomorrow.click();
+    }else if(localStorage.getItem("viewStatus") === "completed"){
+      statusBtns.completed.click();
+    }
+    return;
+  }
 
-export function status() {
-
-const statusBtns = DOM.statusBtns
-const mainCon = DOM.mainCon
-const mainProjectCon = DOM.mainProjectCon
-
-  //test event listener ---------------------------------------
-  Object.values(statusBtns).forEach(btn => {
-    btn.addEventListener("click", (event) => { 
-      event.preventDefault();
-  
-      document.querySelectorAll(".my-project-element").forEach(content => {
-        content.classList.remove("active");
-      });
-
-      Object.values(statusBtns).forEach(btn => {
-        btn.removeAttribute("class");
-      });
-
-      btn.classList.add("active");
-  
-      if(mainCon.contains(mainProjectCon)){
-        mainCon.removeChild(mainProjectCon);
-      }else {
-        console.log("Main project container not exist yet!");
+  const mainCon = createDOM.mainCon
+  const mainProjectCon = createDOM.mainProjectCon;
         
-      }
-    });
-  
-  });
-}
+  const statusName = document.createElement("h1");
+  statusName.classList.add("status-name");
 
-export const sidebarStatus = status();
+
+  //event listener for today task button
+  statusBtns.today.addEventListener("click", (event)=> {
+    event.preventDefault();
+
+    const todayName = "TODAY";
+
+    statusName.textContent = todayName
+    mainCon.appendChild(statusName)
+
+
+    document.querySelectorAll(".my-project-element-container").forEach(content => {
+      content.classList.remove("active");
+    });
+
+    Object.values(statusBtns).forEach(btn => {
+      btn.removeAttribute("class");
+    });
+
+    statusBtns.today.classList.add("active");
+
+    createMain.renderTodayTask();
+    mainCon.appendChild(createMain.todayListCon);
+
+    
+    if(mainCon.contains(mainProjectCon)){
+      mainCon.removeChild(mainProjectCon);
+    }
+    else if(mainCon.contains(createMain.tomorrowListTaskCon)){
+      mainCon.removeChild(createMain.tomorrowListTaskCon);
+    }
+    else if (mainCon.contains(createMain.completedListTaskCon) ) {
+      mainCon.removeChild(createMain.completedListTaskCon)
+    }
+
+    localStorage.setItem("viewStatus", "today");
+  })
+    
+  //event listener for tomorrow task button
+  statusBtns.tomorrow.addEventListener("click", (event) => {
+    event.preventDefault();   
+
+    const tomorrowName = "TOMORROW"
+
+    statusName.textContent = tomorrowName;
+    mainCon.appendChild(statusName);
+
+    document.querySelectorAll(".my-project-element-container").forEach(content => {
+      content.classList.remove("active");
+    });
+
+    Object.values(statusBtns).forEach(btn => {
+      btn.removeAttribute("class");
+    });
+
+    statusBtns.tomorrow.classList.add("active");
+
+    createMain.renderTomorrowTask();
+    mainCon.appendChild(createMain.tomorrowListTaskCon);
+
+    if(mainCon.contains(mainProjectCon)){
+      mainCon.removeChild(mainProjectCon);
+    }
+    else if(mainCon.contains(createMain.todayListCon)){
+      mainCon.removeChild(createMain.todayListCon);
+    }
+    else if(mainCon.contains(createMain.completedListTaskCon)) {
+      mainCon.removeChild(createMain.completedListTaskCon)
+    }
+
+    localStorage.setItem("viewStatus", "tomorrow");
+
+  });
+
+  //event listener for completed task button
+  statusBtns.completed.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const completedName = "COMPLETED";
+
+    statusName.textContent = completedName;
+
+    mainCon.appendChild(statusName);
+
+    document.querySelectorAll(".my-project-element-container").forEach(content => {
+      content.classList.remove("active");
+    });
+
+    Object.values(statusBtns).forEach(btn => {
+      btn.removeAttribute("class");
+    });
+
+    statusBtns.completed.classList.add("active");
+
+    createMain.renderCompletedTask();
+    mainCon.appendChild(createMain.completedListTaskCon);
+
+    if(mainCon.contains(mainProjectCon)){
+      mainCon.removeChild(mainProjectCon);
+    }
+    else if(mainCon.contains(createMain.todayListCon)){
+      mainCon.removeChild(createMain.todayListCon);
+    }
+    else if(mainCon.contains(createMain.tomorrowListTaskCon)) {
+      mainCon.removeChild(createMain.tomorrowListTaskCon)
+    }
+
+    localStorage.setItem("viewStatus", "completed");
+
+  });
+
+
+
+ 
+
+
+  return {
+    statusName,
+    statusBtnsState
+  }
+
+})()
