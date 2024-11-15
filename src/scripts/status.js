@@ -1,5 +1,6 @@
 import { createDOM } from "./DOM";
 import { createMain } from "./main";
+import { sidebarProject } from "./project";
 
 
 export const sidebarStatus = (() => {
@@ -50,13 +51,13 @@ export const sidebarStatus = (() => {
     if(mainCon.contains(mainProjectCon)){
       mainCon.removeChild(mainProjectCon);
     }
-    else if(mainCon.contains(createMain.tomorrowListTaskCon)){
+    if(mainCon.contains(createMain.tomorrowListTaskCon)){
       mainCon.removeChild(createMain.tomorrowListTaskCon);
     }
-    else if (mainCon.contains(createMain.completedListTaskCon) ) {
+    if (mainCon.contains(createMain.completedListTaskCon) ) {
       mainCon.removeChild(createMain.completedListTaskCon)
-    }
-
+    } 
+    
     localStorage.setItem("viewStatus", "today");
   })
     
@@ -85,12 +86,13 @@ export const sidebarStatus = (() => {
     if(mainCon.contains(mainProjectCon)){
       mainCon.removeChild(mainProjectCon);
     }
-    else if(mainCon.contains(createMain.todayListCon)){
+    if(mainCon.contains(createMain.todayListCon)){
       mainCon.removeChild(createMain.todayListCon);
     }
-    else if(mainCon.contains(createMain.completedListTaskCon)) {
+    if(mainCon.contains(createMain.completedListTaskCon)) {
       mainCon.removeChild(createMain.completedListTaskCon)
     }
+
 
     localStorage.setItem("viewStatus", "tomorrow");
 
@@ -122,10 +124,10 @@ export const sidebarStatus = (() => {
     if(mainCon.contains(mainProjectCon)){
       mainCon.removeChild(mainProjectCon);
     }
-    else if(mainCon.contains(createMain.todayListCon)){
+    if(mainCon.contains(createMain.todayListCon)){
       mainCon.removeChild(createMain.todayListCon);
     }
-    else if(mainCon.contains(createMain.tomorrowListTaskCon)) {
+    if(mainCon.contains(createMain.tomorrowListTaskCon)) {
       mainCon.removeChild(createMain.tomorrowListTaskCon)
     }
 
